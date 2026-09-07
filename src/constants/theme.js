@@ -1,0 +1,98 @@
+import { Platform } from 'react-native';
+
+export const fonts = {
+  serif: Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia' }),
+  sans: Platform.select({ ios: 'System', android: 'sans-serif', default: 'System' }),
+  sansMedium: Platform.select({ ios: 'System', android: 'sans-serif-medium', default: 'System' }),
+};
+
+export const lightColors = {
+  background: '#FFFFFF',
+  textPrimary: '#0B0B12',
+  textSecondary: '#6B7280',
+  textTertiary: '#9CA3AF',
+  primary: '#4338CA',
+  primaryGradient: ['#4338CA', '#4338CA'],
+  accent: '#5B4FE0',
+  success: '#16A34A',
+  successBg: '#DCFCE7',
+  card: '#FFFFFF',
+  cardBorder: '#ECECEF',
+  badgeBg: '#F1F1F4',
+  badgeText: '#4B5563',
+  progressTrack: '#E9E7FB',
+  progressLiquidity: '#4F46E5',
+  progressReserve: '#16A34A',
+  progressBuffer: '#D8D5F6',
+  buttonText: '#FFFFFF',
+  outlineButtonBorder: '#E5E7EB',
+  outlineButtonBg: '#FFFFFF',
+  link: '#4338CA',
+  divider: '#E5E7EB',
+  inputBg: '#FFFFFF',
+  inputBorder: '#E5E7EB',
+  placeholder: '#9CA3AF',
+  iconMuted: '#9CA3AF',
+  checkboxBorder: '#D1D5DB',
+  checkboxFill: '#4338CA',
+  infoBg: '#F1F0FE',
+  infoText: '#4B4B57',
+  optionIconBg: '#F1F1F4',
+  successSolidBg: '#F0FDF4',
+  successSolidBorder: '#BBF7D0',
+   tabBarBg: '#FFFFFF',
+  tabBarBorder: '#E8E8EC',
+  tabBarActive: '#6C4EF5',    // or your primary/brand color
+  tabBarInactive: '#9A9AA6',
+  error: '#DC2626',
+  errorBg: '#FEE2E2',
+  errorSolidBg: '#FEE2E2',
+  errorSolidBorder: '#FECACA',
+};
+
+export const darkColors = {
+  background: '#0A0A12',
+  textPrimary: '#F5F5F7',
+  textSecondary: '#9CA3AF',
+  textTertiary: '#7C7C8A',
+  primary: '#8B5CF6',
+  primaryGradient: ['#8B63F2', '#3E7BFA'],
+  accent: '#A78BFA',
+  success: '#34D399',
+  successBg: 'rgba(52, 211, 153, 0.15)',
+  card: '#14141F',
+  cardBorder: 'rgba(255,255,255,0.08)',
+  badgeBg: 'rgba(255,255,255,0.08)',
+  badgeText: '#C7C7D1',
+  progressTrack: 'rgba(255,255,255,0.08)',
+  progressLiquidity: '#8B7CF6',
+  progressReserve: '#34D399',
+  progressBuffer: 'rgba(255,255,255,0.15)',
+  buttonText: '#FFFFFF',
+  outlineButtonBorder: 'rgba(255,255,255,0.12)',
+  outlineButtonBg: 'rgba(255,255,255,0.04)',
+  link: '#A78BFA',
+  divider: 'rgba(255,255,255,0.08)',
+  inputBg: 'rgba(255,255,255,0.04)',
+  inputBorder: 'rgba(255,255,255,0.10)',
+  placeholder: '#5F5F6B',
+  iconMuted: '#7C7C8A',
+  checkboxBorder: 'rgba(255,255,255,0.20)',
+  checkboxFill: '#8B5CF6',
+  infoBg: 'rgba(255,255,255,0.06)',
+  infoText: '#B8B8C4',
+  optionIconBg: 'rgba(255,255,255,0.06)',
+  successSolidBg: '#0F2E1F',
+  successSolidBorder: '#1F4A34',
+  tabBarBg: '#0B0B0F',        // same as (or very close to) your screen background
+  tabBarBorder: '#1A1A20',    // subtle, barely-there top border
+  tabBarActive: '#FFFFFF',    // active icon/label — bright, per your mockup
+  tabBarInactive: '#6B6B76',  // muted gray-blue for inactive icons/labels
+  error: '#F87171',
+  errorBg: 'rgba(248, 113, 113, 0.15)',
+  errorSolidBg: '#2A0A0A',
+  errorSolidBorder: '#5C1A1A',
+};
+
+
+export const getColors = (theme) => theme === 'dark' ? darkColors : lightColors;
