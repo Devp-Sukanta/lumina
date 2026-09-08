@@ -1,8 +1,8 @@
 // screens/ProfileScreen.tsx
+
 import { fonts, getColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -13,12 +13,10 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
-// Mock user data
 const MOCK_USER = {
     id: '123',
     name: 'Sarah Anderson',
@@ -26,138 +24,284 @@ const MOCK_USER = {
     email: 'sarah.anderson@example.com',
     phone: '+91 98765 43210',
     avatar: 'https://i.pravatar.cc/150?img=47',
-    bio: '💰 Finance Enthusiast | 🎯 Budget Master | ✈️ Travel',
+    bio: 'Finance Enthusiast',
     joinDate: 'Joined January 2023',
     accountStatus: 'verified',
 };
 
-// ============ COMPONENTS ============
+const STATS = [
+    {
+        value: '24',
+        label: 'Activities',
+    },
+    {
+        value: '85',
+        label: 'Likes',
+    },
+    {
+        value: '46',
+        label: 'Life time',
+    },
+];
 
-// Header with Avatar
-const ProfileHeader = ({ user, colors, onEditProfile }) => {
+// ============================================================
+// PROFILE TOP BAR
+// ============================================================
+
+const ProfileTopBar = ({ colors, onEdit }) => {
+    const router = useRouter();
+
     return (
-        <View
-            style={[
-                styles.header,
-                {
-                    backgroundColor: colors.card,
-                    borderBottomColor: colors.cardBorder,
-                },
-            ]}
-        >
-            <LinearGradient
-                colors={colors.primaryGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradientBg}
-            />
-
-            {/* Avatar Section */}
-            <View style={styles.avatarSection}>
-                <View style={styles.avatarWrapper}>
-                    <Image
-                        source={{ uri: user.avatar }}
-                        style={styles.avatar}
-                    />
-                    {user.accountStatus === 'verified' && (
-                        <View
-                            style={[
-                                styles.verifiedBadge,
-                                { backgroundColor: colors.success },
-                            ]}
-                        >
-                            <Feather name="check" size={12} color={colors.buttonText} />
-                        </View>
-                    )}
-                </View>
-
-                {/* User Info */}
-                <View style={styles.userInfo}>
-                    <Text
-                        style={[styles.userName, { color: colors.textPrimary }]}
-                    >
-                        {user.name}
-                    </Text>
-                    <Text
-                        style={[styles.userUsername, { color: colors.textSecondary }]}
-                    >
-                        {user.username}
-                    </Text>
-                    <Text
-                        style={[styles.userBio, { color: colors.textTertiary }]}
-                    >
-                        {user.bio}
-                    </Text>
-                    <Text
-                        style={[styles.joinDate, { color: colors.textTertiary }]}
-                    >
-                        {user.joinDate}
-                    </Text>
-                </View>
-            </View>
-
-            {/* Edit Button */}
+        <View style={styles.topBar}>
             <TouchableOpacity
-                onPress={onEditProfile}
+                onPress={() => router.back()}
+                activeOpacity={0.7}
                 style={[
-                    styles.editButton,
-                    { borderColor: colors.primary },
+                    styles.topBarButton,
+                    {
+                        backgroundColor: colors.card,
+                        borderColor: colors.cardBorder,
+                    },
                 ]}
             >
-                <Feather name="edit-2" size={16} color={colors.primary} />
-                <Text style={[styles.editButtonText, { color: colors.primary }]}>
-                    Edit Profile
-                </Text>
+                <Feather
+                    name="chevron-left"
+                    size={19}
+                    color={colors.textPrimary}
+                />
+            </TouchableOpacity>
+
+            <Text
+                style={[
+                    styles.topBarTitle,
+                    { color: colors.textPrimary },
+                ]}
+            >
+                Profile
+            </Text>
+
+            <TouchableOpacity
+                onPress={()=> router.push('/help-support')}
+                activeOpacity={0.7}
+                style={[
+                    styles.topBarButton,
+                    {
+                        backgroundColor: colors.card,
+                        borderColor: colors.cardBorder,
+                    },
+                ]}
+            >
+                <MaterialCommunityIcons
+                    name="help-circle-outline"
+                    size={20}
+                    color={colors.textPrimary}
+                />
             </TouchableOpacity>
         </View>
     );
 };
 
-// Navigation Item (Section Title as Listitem)
-const NavigationItem = ({ title, icon, subtitle, onPress, colors, rightElement }) => {
+// ============================================================
+// PROFILE HEADER
+// ============================================================
+
+const ProfileHero = ({ user, colors }) => {
     return (
-        <TouchableOpacity
-            onPress={onPress}
+        <View style={styles.profileHero}>
+            <View style={styles.avatarContainer}>
+                <Image
+                    source={{ uri: user.avatar }}
+                    style={styles.avatar}
+                />
+
+                {user.accountStatus === 'verified' && (
+                    <View
+                        style={[
+                            styles.verifiedBadge,
+                            {
+                                backgroundColor: colors.primary,
+                                borderColor: colors.background,
+                            },
+                        ]}
+                    >
+                        <MaterialIcons
+                            name="verified"
+                            size={12}
+                            color={colors.buttonText}
+                        />
+                    </View>
+                )}
+            </View>
+
+            <Text
+                style={[
+                    styles.userName,
+                    { color: colors.textPrimary },
+                ]}
+            >
+                {user.name}
+            </Text>
+        </View>
+    );
+};
+
+// ============================================================
+// STAT CARD
+// ============================================================
+
+const StatCard = ({ value, label, colors, isLast }) => {
+    return (
+        <View
             style={[
-                styles.navigationItem,
+                styles.statCard,
                 {
                     backgroundColor: colors.card,
-                    borderBottomColor: colors.cardBorder,
+                    borderColor: colors.cardBorder,
+                    marginRight: isLast ? 0 : 8,
                 },
             ]}
         >
-            <View style={styles.navigationItemContent}>
+            <Text
+                style={[
+                    styles.statValue,
+                    { color: colors.textPrimary },
+                ]}
+            >
+                {value}
+            </Text>
+
+            <Text
+                style={[
+                    styles.statLabel,
+                    { color: colors.textTertiary },
+                ]}
+            >
+                {label}
+            </Text>
+        </View>
+    );
+};
+
+// ============================================================
+// SETTINGS ROW
+// ============================================================
+
+const SettingsRow = ({
+    title,
+    subtitle,
+    icon,
+    colors,
+    onPress,
+    danger = false,
+    isLast = false,
+}) => {
+    const iconColor = danger
+        ? '#EF4444'
+        : colors.primary;
+
+    return (
+        <TouchableOpacity
+            onPress={onPress}
+            activeOpacity={0.7}
+            style={[
+                styles.settingsRow,
+                {
+                    borderBottomColor: colors.cardBorder,
+                    borderBottomWidth: isLast ? 0 : StyleSheet.hairlineWidth,
+                },
+            ]}
+        >
+            <View
+                style={[
+                    styles.settingsIcon,
+                    {
+                        backgroundColor: danger
+                            ? 'rgba(239, 68, 68, 0.10)'
+                            : colors.badgeBg,
+                    },
+                ]}
+            >
                 <MaterialCommunityIcons
                     name={icon}
-                    size={24}
-                    color={colors.primary}
-                    style={styles.navigationIcon}
+                    size={19}
+                    color={iconColor}
                 />
-                <View style={styles.navigationItemText}>
-                    <Text style={[styles.navigationItemTitle, { color: colors.textPrimary }]}>
-                        {title}
-                    </Text>
-                    {subtitle && (
-                        <Text style={[styles.navigationItemSubtitle, { color: colors.textTertiary }]}>
-                            {subtitle}
-                        </Text>
-                    )}
-                </View>
             </View>
-            {rightElement ? (
-                rightElement
-            ) : (
-                <Feather
-                    name="chevron-right"
-                    size={20}
-                    color={colors.textTertiary}
-                />
-            )}
+
+            <View style={styles.settingsTextContainer}>
+                <Text
+                    style={[
+                        styles.settingsTitle,
+                        {
+                            color: danger
+                                ? '#EF4444'
+                                : colors.textPrimary,
+                        },
+                    ]}
+                >
+                    {title}
+                </Text>
+
+                {subtitle && (
+                    <Text
+                        style={[
+                            styles.settingsSubtitle,
+                            { color: colors.textTertiary },
+                        ]}
+                    >
+                        {subtitle}
+                    </Text>
+                )}
+            </View>
+
+            <Feather
+                name="chevron-right"
+                size={17}
+                color={danger ? '#EF4444' : colors.textTertiary}
+            />
         </TouchableOpacity>
     );
 };
 
-// Logout Modal
+// ============================================================
+// SECTION
+// ============================================================
+
+const SettingsSection = ({
+    title,
+    children,
+    colors,
+}) => {
+    return (
+        <View style={styles.section}>
+            <Text
+                style={[
+                    styles.sectionTitle,
+                    { color: colors.textTertiary },
+                ]}
+            >
+                {title}
+            </Text>
+
+            <View
+                style={[
+                    styles.settingsCard,
+                    {
+                        backgroundColor: colors.card,
+                        borderColor: colors.cardBorder,
+                    },
+                ]}
+            >
+                {children}
+            </View>
+        </View>
+    );
+};
+
+// ============================================================
+// LOGOUT MODAL
+// ============================================================
+
 const LogoutModal = ({
     visible,
     onClose,
@@ -176,18 +320,23 @@ const LogoutModal = ({
                 <View
                     style={[
                         styles.modalContent,
-                        { backgroundColor: colors.card },
+                        {
+                            backgroundColor: colors.card,
+                            borderColor: colors.cardBorder,
+                        },
                     ]}
                 >
                     <View
                         style={[
                             styles.modalIconContainer,
-                            { backgroundColor: 'rgba(99, 102, 241, 0.1)' },
+                            {
+                                backgroundColor: colors.badgeBg,
+                            },
                         ]}
                     >
                         <MaterialCommunityIcons
                             name="logout"
-                            size={40}
+                            size={32}
                             color={colors.primary}
                         />
                     </View>
@@ -207,7 +356,8 @@ const LogoutModal = ({
                             { color: colors.textSecondary },
                         ]}
                     >
-                        You will be signed out of your account on this device. You can sign back in anytime.
+                        You will be signed out of your account on this
+                        device. You can sign back in anytime.
                     </Text>
 
                     <View style={styles.modalButtonsContainer}>
@@ -237,13 +387,23 @@ const LogoutModal = ({
                             disabled={isLoading}
                             style={[
                                 styles.modalButton,
-                                { backgroundColor: colors.primary },
+                                {
+                                    backgroundColor: colors.primary,
+                                },
                             ]}
                         >
                             {isLoading ? (
-                                <ActivityIndicator color="#FFFFFF" size="small" />
+                                <ActivityIndicator
+                                    color="#FFFFFF"
+                                    size="small"
+                                />
                             ) : (
-                                <Text style={[styles.modalButtonText, { color: '#FFFFFF' }]}>
+                                <Text
+                                    style={[
+                                        styles.modalButtonText,
+                                        { color: '#FFFFFF' },
+                                    ]}
+                                >
                                     Logout
                                 </Text>
                             )}
@@ -255,7 +415,10 @@ const LogoutModal = ({
     );
 };
 
-// Delete Account Modal
+// ============================================================
+// DELETE MODAL
+// ============================================================
+
 const DeleteAccountModal = ({
     visible,
     onClose,
@@ -274,18 +437,24 @@ const DeleteAccountModal = ({
                 <View
                     style={[
                         styles.modalContent,
-                        { backgroundColor: colors.card },
+                        {
+                            backgroundColor: colors.card,
+                            borderColor: colors.cardBorder,
+                        },
                     ]}
                 >
                     <View
                         style={[
                             styles.modalIconContainer,
-                            { backgroundColor: 'rgba(239, 68, 68, 0.1)' },
+                            {
+                                backgroundColor:
+                                    'rgba(239, 68, 68, 0.10)',
+                            },
                         ]}
                     >
                         <MaterialCommunityIcons
-                            name="alert-circle"
-                            size={40}
+                            name="alert-circle-outline"
+                            size={34}
                             color="#EF4444"
                         />
                     </View>
@@ -305,7 +474,9 @@ const DeleteAccountModal = ({
                             { color: colors.textSecondary },
                         ]}
                     >
-                        This action cannot be undone. All your data, transactions, and account information will be permanently deleted.
+                        This action cannot be undone. All your data,
+                        transactions, and account information will be
+                        permanently deleted.
                     </Text>
 
                     <View style={styles.warningList}>
@@ -314,13 +485,25 @@ const DeleteAccountModal = ({
                             'Account cannot be recovered',
                             'Connected devices will be logged out',
                         ].map((warning, index) => (
-                            <View key={index} style={styles.warningItem}>
+                            <View
+                                key={index}
+                                style={styles.warningItem}
+                            >
                                 <MaterialCommunityIcons
                                     name="close-circle"
-                                    size={16}
+                                    size={15}
                                     color="#EF4444"
                                 />
-                                <Text style={[styles.warningText, { color: colors.textSecondary }]}>
+
+                                <Text
+                                    style={[
+                                        styles.warningText,
+                                        {
+                                            color:
+                                                colors.textSecondary,
+                                        },
+                                    ]}
+                                >
                                     {warning}
                                 </Text>
                             </View>
@@ -354,13 +537,23 @@ const DeleteAccountModal = ({
                             disabled={isLoading}
                             style={[
                                 styles.modalButton,
-                                { backgroundColor: '#EF4444' },
+                                {
+                                    backgroundColor: '#EF4444',
+                                },
                             ]}
                         >
                             {isLoading ? (
-                                <ActivityIndicator color="#FFFFFF" size="small" />
+                                <ActivityIndicator
+                                    color="#FFFFFF"
+                                    size="small"
+                                />
                             ) : (
-                                <Text style={[styles.modalButtonText, { color: '#FFFFFF' }]}>
+                                <Text
+                                    style={[
+                                        styles.modalButtonText,
+                                        { color: '#FFFFFF' },
+                                    ]}
+                                >
                                     Delete Account
                                 </Text>
                             )}
@@ -372,16 +565,21 @@ const DeleteAccountModal = ({
     );
 };
 
-// ============ MAIN SCREEN ============
+// ============================================================
+// MAIN SCREEN
+// ============================================================
 
 export default function ProfileScreen() {
     const router = useRouter();
+
     const { theme } = useTheme();
     const colors = getColors(theme);
+
     const insets = useSafeAreaInsets();
 
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -391,170 +589,165 @@ export default function ProfileScreen() {
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
+
         setTimeout(() => {
             setIsLoggingOut(false);
             setShowLogoutModal(false);
-            // Navigate to login
             router.replace('/(auth)/login');
         }, 1500);
     };
 
     const handleDeleteAccount = async () => {
         setIsDeleting(true);
+
         setTimeout(() => {
             setIsDeleting(false);
             setShowDeleteModal(false);
-            // Navigate to login
             router.replace('/(auth)/login');
         }, 2000);
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+        <SafeAreaView
+            style={[
+                styles.safeArea,
+                {
+                    backgroundColor: colors.background,
+                },
+            ]}
+        >
             <View
                 style={[
                     styles.container,
-                    { backgroundColor: colors.background },
+                    {
+                        backgroundColor: colors.background,
+                    },
                 ]}
             >
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                        paddingBottom: insets.bottom + 20,
+                        paddingBottom: insets.bottom + 30,
                     }}
                 >
-                    {/* Header with Avatar */}
-                    <ProfileHeader
-                        user={MOCK_USER}
+                    {/* TOP BAR */}
+
+                    <ProfileTopBar
                         colors={colors}
-                        onEditProfile={handleEditProfile}
+                        onEdit={handleEditProfile}
                     />
 
-                    {/* Navigation Items */}
-                    <View style={{ marginTop: 24 }}>
-                        <NavigationItem
+                    {/* PROFILE */}
+
+                    <ProfileHero
+                        user={MOCK_USER}
+                        colors={colors}
+                    />
+
+
+                    {/* ACCOUNT */}
+
+                    <SettingsSection
+                        title="ACCOUNT"
+                        colors={colors}
+                    >
+                        <SettingsRow
                             title="Personal Details"
-                            icon="account-details"
                             subtitle="Email, phone, account info"
-                            onPress={() => router.push('/profile/personal-details')}
+                            icon="account-details-outline"
                             colors={colors}
+                            onPress={() =>
+                                router.push('/personal-details')
+                            }
                         />
 
-                        <NavigationItem
+                        <SettingsRow
                             title="Security & Biometrics"
-                            icon="shield-lock"
-                            subtitle="2FA, Fingerprint, Login history"
-                            onPress={() => router.push('/profile/security')}
+                            subtitle="2FA, fingerprint, login history"
+                            icon="shield-lock-outline"
                             colors={colors}
+                            onPress={() =>
+                                router.push('/security')
+                            }
                         />
 
-                        <NavigationItem
+                        <SettingsRow
                             title="Appearance"
-                            icon="palette"
-                            subtitle="Theme, Dark mode"
-                            onPress={() => router.push('/profile/appearance')}
+                            subtitle="Theme and display preferences"
+                            icon="palette-outline"
                             colors={colors}
+                            onPress={() =>
+                                router.push('/appearance')
+                            }
+                            isLast
                         />
+                    </SettingsSection>
 
-                        <NavigationItem
-                            title="Account Settings"
-                            icon="account-cog"
-                            subtitle="Password, Privacy, Notifications"
-                            onPress={() => router.push('/profile/account-settings')}
-                            colors={colors}
-                        />
+                    {/* SUPPORT */}
 
-                        <NavigationItem
+                    {/* <SettingsSection
+                        title="SUPPORT"
+                        colors={colors}
+                    >
+                        <SettingsRow
                             title="Help & Support"
-                            icon="help-circle"
                             subtitle="Contact support, FAQ"
-                            onPress={() => router.push('/profile/help-support')}
+                            icon="help-circle-outline"
                             colors={colors}
+                            onPress={() =>
+                                router.push('/help-support')
+                            }
+                            isLast
                         />
-                    </View>
+                    </SettingsSection> */}
 
-                    {/* Danger Zone */}
-                    <View style={{ marginTop: 32 }}>
-                        <Text
-                            style={[
-                                styles.dangerZoneLabel,
-                                { color: colors.textTertiary },
-                            ]}
-                        >
-                            DANGER ZONE
-                        </Text>
+                    {/* ACCOUNT ACTIONS */}
 
-                        <TouchableOpacity
-                            onPress={() => setShowLogoutModal(true)}
-                            style={[
-                                styles.dangerItem,
-                                {
-                                    backgroundColor: colors.card,
-                                    borderBottomColor: colors.cardBorder,
-                                },
-                            ]}
-                        >
-                            <View style={styles.navigationItemContent}>
-                                <MaterialCommunityIcons
-                                    name="logout"
-                                    size={24}
-                                    color={colors.primary}
-                                    style={styles.navigationIcon}
-                                />
-                                <Text style={[styles.navigationItemTitle, { color: colors.textPrimary }]}>
-                                    Logout
-                                </Text>
-                            </View>
-                            <Feather
-                                name="chevron-right"
-                                size={20}
-                                color={colors.textTertiary}
-                            />
-                        </TouchableOpacity>
+                    <SettingsSection
+                        title="ACCOUNT ACTIONS"
+                        colors={colors}
+                    >
+                        <SettingsRow
+                            title="Logout"
+                            icon="logout"
+                            colors={colors}
+                            onPress={() =>
+                                setShowLogoutModal(true)
+                            }
+                        />
 
-                        <TouchableOpacity
-                            onPress={() => setShowDeleteModal(true)}
-                            style={[
-                                styles.dangerItem,
-                                {
-                                    backgroundColor: 'rgba(239, 68, 68, 0.08)',
-                                    borderBottomColor: colors.cardBorder,
-                                },
-                            ]}
-                        >
-                            <View style={styles.navigationItemContent}>
-                                <MaterialCommunityIcons
-                                    name="trash-can"
-                                    size={24}
-                                    color="#EF4444"
-                                    style={styles.navigationIcon}
-                                />
-                                <Text style={[styles.navigationItemTitle, { color: '#EF4444' }]}>
-                                    Delete Account
-                                </Text>
-                            </View>
-                            <Feather
-                                name="chevron-right"
-                                size={20}
-                                color="#EF4444"
-                            />
-                        </TouchableOpacity>
+                        <SettingsRow
+                            title="Delete Account"
+                            subtitle="Permanently remove your account"
+                            icon="trash-can-outline"
+                            colors={colors}
+                            danger
+                            onPress={() =>
+                                setShowDeleteModal(true)
+                            }
+                            isLast
+                        />
+                    </SettingsSection>
 
-                        <Text
-                            style={[
-                                styles.dangerZoneWarning,
-                                { color: colors.textTertiary },
-                            ]}
-                        >
-                            Deleting your account will permanently remove all your data and cannot be undone.
-                        </Text>
-                    </View>
+                    <Text
+                        style={[
+                            styles.footerText,
+                            {
+                                color: colors.textTertiary,
+                            },
+                        ]}
+                    >
+                        Member since January 2023
+                    </Text>
                 </ScrollView>
 
-                {/* Modals */}
+                {/* MODALS */}
+
                 <LogoutModal
                     visible={showLogoutModal}
-                    onClose={() => setShowLogoutModal(false)}
+                    onClose={() =>
+                        setShowLogoutModal(false)
+                    }
                     onConfirm={handleLogout}
                     colors={colors}
                     isLoading={isLoggingOut}
@@ -562,7 +755,9 @@ export default function ProfileScreen() {
 
                 <DeleteAccountModal
                     visible={showDeleteModal}
-                    onClose={() => setShowDeleteModal(false)}
+                    onClose={() =>
+                        setShowDeleteModal(false)
+                    }
                     onConfirm={handleDeleteAccount}
                     colors={colors}
                     isLoading={isDeleting}
@@ -572,210 +767,273 @@ export default function ProfileScreen() {
     );
 }
 
-// ============ STYLES ============
+// ============================================================
+// STYLES
+// ============================================================
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
+
     container: {
         flex: 1,
     },
-    header: {
-        padding: 16,
-        borderBottomWidth: 1,
-        paddingTop: 8,
-    },
-    gradientBg: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        opacity: 0.06,
-    },
-    avatarSection: {
+
+    // --------------------------------------------------------
+    // TOP BAR
+    // --------------------------------------------------------
+
+    topBar: {
+        height: 52,
+        paddingHorizontal: 16,
         flexDirection: 'row',
-        marginBottom: 16,
-        gap: 16,
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
-    avatarWrapper: {
+
+    topBarButton: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    topBarTitle: {
+        fontSize: 17,
+        fontWeight: '700',
+        fontFamily: fonts.sansMedium,
+    },
+
+    // --------------------------------------------------------
+    // PROFILE
+    // --------------------------------------------------------
+
+    profileHero: {
+        alignItems: 'center',
+        paddingTop: 12,
+        paddingBottom: 18,
+    },
+
+    avatarContainer: {
         position: 'relative',
+        marginBottom: 10,
     },
+
     avatar: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+        width: 82,
+        height: 82,
+        borderRadius: 41,
     },
+
     verifiedBadge: {
         position: 'absolute',
-        bottom: 0,
-        right: 0,
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        justifyContent: 'center',
+        right: 1,
+        bottom: 1,
+        width: 21,
+        height: 21,
+        borderRadius: 11,
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#FFFFFF',
-    },
-    userInfo: {
-        flex: 1,
         justifyContent: 'center',
-        gap: 4,
+        borderWidth: 2,
     },
+
     userName: {
+        fontSize: 19,
+        fontWeight: '700',
+        fontFamily: fonts.sansMedium,
+        marginBottom: 3,
+    },
+
+    userRole: {
+        fontSize: 12,
+        fontWeight: '500',
+        marginBottom: 2,
+    },
+
+    userHandle: {
+        fontSize: 11,
+    },
+
+    // --------------------------------------------------------
+    // STATS
+    // --------------------------------------------------------
+
+    statsContainer: {
+        flexDirection: 'row',
+        marginHorizontal: 15,
+        marginBottom: 22,
+    },
+
+    statCard: {
+        flex: 1,
+        minHeight: 67,
+        borderRadius: 13,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    statValue: {
         fontSize: 18,
         fontWeight: '700',
         fontFamily: fonts.sansMedium,
+        marginBottom: 2,
     },
-    userUsername: {
-        fontSize: 14,
+
+    statLabel: {
+        fontSize: 10,
         fontWeight: '500',
     },
-    userBio: {
-        fontSize: 12,
-        marginTop: 2,
-        lineHeight: 16,
+
+    // --------------------------------------------------------
+    // SETTINGS
+    // --------------------------------------------------------
+
+    section: {
+        marginHorizontal: 15,
+        marginBottom: 18,
     },
-    joinDate: {
-        fontSize: 11,
-        marginTop: 4,
+
+    sectionTitle: {
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 0.8,
+        marginLeft: 4,
+        marginBottom: 7,
+        fontFamily: fonts.sansMedium,
     },
-    editButton: {
+
+    settingsCard: {
+        borderRadius: 14,
+        borderWidth: 1,
+        overflow: 'hidden',
+    },
+
+    settingsRow: {
+        minHeight: 64,
+        paddingHorizontal: 13,
+        paddingVertical: 10,
         flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    settingsIcon: {
+        width: 36,
+        height: 36,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        borderRadius: 8,
-        borderWidth: 1,
-        gap: 6,
+        marginRight: 12,
     },
-    editButtonText: {
-        fontSize: 13,
-        fontWeight: '700',
-        fontFamily: fonts.sansMedium,
-    },
-    navigationItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 16,
-        borderBottomWidth: 1,
-    },
-    navigationItemContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
+
+    settingsTextContainer: {
         flex: 1,
+        justifyContent: 'center',
     },
-    navigationIcon: {
-        width: 24,
-    },
-    navigationItemText: {
-        flex: 1,
-        gap: 4,
-    },
-    navigationItemTitle: {
-        fontSize: 16,
+
+    settingsTitle: {
+        fontSize: 14,
         fontWeight: '600',
         fontFamily: fonts.sansMedium,
+        marginBottom: 2,
     },
-    navigationItemSubtitle: {
-        fontSize: 13,
-        fontFamily: fonts.sans,
-    },
-    dangerZoneLabel: {
+
+    settingsSubtitle: {
         fontSize: 11,
-        fontWeight: '700',
-        letterSpacing: 0.5,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        fontFamily: fonts.sansMedium,
-    },
-    dangerItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 16,
-        borderBottomWidth: 1,
-    },
-    dangerZoneWarning: {
-        fontSize: 12,
-        paddingHorizontal: 16,
-        paddingTop: 12,
-        textAlign: 'center',
-        lineHeight: 16,
+        lineHeight: 15,
         fontFamily: fonts.sans,
     },
-    // Modal Styles
+
+    footerText: {
+        textAlign: 'center',
+        fontSize: 10,
+        marginTop: 2,
+    },
+
+    // --------------------------------------------------------
+    // MODALS
+    // --------------------------------------------------------
+
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0,0,0,0.55)',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
     },
+
     modalContent: {
-        borderRadius: 16,
-        padding: 24,
-        maxWidth: '90%',
         width: '100%',
+        maxWidth: 390,
+        borderRadius: 18,
+        borderWidth: 1,
+        padding: 22,
         alignItems: 'center',
     },
+
     modalIconContainer: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+        width: 68,
+        height: 68,
+        borderRadius: 34,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 14,
     },
+
     modalTitle: {
-        fontSize: 20,
+        fontSize: 19,
         fontWeight: '700',
         fontFamily: fonts.sansMedium,
-        marginBottom: 12,
+        marginBottom: 10,
         textAlign: 'center',
     },
+
     modalMessage: {
-        fontSize: 14,
-        lineHeight: 20,
+        fontSize: 13,
+        lineHeight: 19,
         textAlign: 'center',
         marginBottom: 20,
         fontFamily: fonts.sans,
     },
+
     warningList: {
         width: '100%',
-        marginBottom: 24,
-        gap: 12,
+        marginBottom: 20,
+        gap: 10,
     },
+
     warningItem: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
     },
+
     warningText: {
-        fontSize: 13,
         flex: 1,
+        fontSize: 12,
         fontFamily: fonts.sans,
     },
+
     modalButtonsContainer: {
         width: '100%',
-        gap: 10,
+        gap: 9,
     },
+
     modalButton: {
-        paddingVertical: 12,
+        minHeight: 44,
         paddingHorizontal: 16,
-        borderRadius: 8,
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: 44,
         borderWidth: 1,
         borderColor: 'transparent',
     },
+
     modalButtonText: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: '700',
         fontFamily: fonts.sansMedium,
     },
