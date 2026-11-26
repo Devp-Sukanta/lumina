@@ -542,7 +542,7 @@ export default function activity() {
           />
         }
         contentContainerStyle={{
-          paddingBottom: insets.bottom + 20,
+          paddingBottom: insets.bottom + 100,
         }}
         stickySectionHeadersEnabled={false}
       />

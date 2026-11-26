@@ -1,7 +1,8 @@
 import { FormInput } from '@/components/FormInput';
 import { fonts, getColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -162,11 +163,11 @@ export default function SignUpScreen() {
 
                 <View style={styles.socialRow}>
                     <Pressable style={styles.socialButton}>
-                        <Ionicons name="logo-apple" size={18} color={colors.textPrimary} />
-                        <Text style={styles.socialText}>Apple</Text>
+                        <Image source={require("../../assets/images/facebook.png")} style={{ height: 30, width: 30, resizeMode: "contain" }} />
+                        <Text style={styles.socialText}>Facebook</Text>
                     </Pressable>
                     <Pressable style={styles.socialButton}>
-                        <Ionicons name="logo-google" size={16} color={colors.textPrimary} />
+                        <Image source={require("../../assets/images/google.png")} style={{ height: 25, width: 25, resizeMode: "contain" }} />
                         <Text style={styles.socialText}>Google</Text>
                     </Pressable>
                 </View>

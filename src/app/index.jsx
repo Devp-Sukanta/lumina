@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import {
@@ -169,11 +170,11 @@ export default function WelcomeScreen() {
 
         <View style={styles.socialRow}>
           <Pressable style={styles.socialButton}>
-            <Ionicons name="logo-apple" size={18} color={colors.textPrimary} />
-            <Text style={styles.socialText}>Apple</Text>
+            <Image source={require("../../assets/images/facebook.png")} style={{ height: 30, width: 30, resizeMode: "contain" }} />
+            <Text style={styles.socialText}>Facebook</Text>
           </Pressable>
           <Pressable style={styles.socialButton}>
-            <Ionicons name="logo-google" size={16} color={colors.textPrimary} />
+            <Image source={require("../../assets/images/google.png")} style={{ height: 25, width: 25, resizeMode: "contain" }} />
             <Text style={styles.socialText}>Google</Text>
           </Pressable>
         </View>

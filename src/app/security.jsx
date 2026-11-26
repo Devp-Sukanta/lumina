@@ -4,7 +4,7 @@ import { fonts, getColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
     Alert,
@@ -50,7 +50,7 @@ const ScreenHeader = ({ colors }) => {
                     { color: colors.textPrimary },
                 ]}
             >
-                Security & Biometrics
+                App Security 
             </Text>
 
             {/* Security indicator */}
@@ -475,7 +475,7 @@ export default function SecurityScreen() {
 
                     {/* SECURITY */}
 
-                    <Section
+                    {/* <Section
                         title="SECURITY"
                         colors={colors}
                     >
@@ -502,7 +502,7 @@ export default function SecurityScreen() {
                             disabled={!biometricAvailable}
                             isLast
                         />
-                    </Section>
+                    </Section> */}
 
                     {/* PASSWORD */}
 
@@ -517,7 +517,7 @@ export default function SecurityScreen() {
                             colors={colors}
                             onPress={() => {
                                 // Add your change-password route here.
-                                // router.push('/profile/change-password')
+                                router.push('/change-password')
                             }}
                             isLast
                         />
@@ -529,15 +529,6 @@ export default function SecurityScreen() {
                         title="DEVICES & SESSIONS"
                         colors={colors}
                     >
-                        <NavigationRow
-                            icon="devices"
-                            title="Active Sessions"
-                            subtitle="3 devices"
-                            colors={colors}
-                            onPress={() => {
-                                // Add active sessions route here.
-                            }}
-                        />
 
                         <NavigationRow
                             icon="history"
@@ -546,6 +537,7 @@ export default function SecurityScreen() {
                             colors={colors}
                             onPress={() => {
                                 // Add login history route here.
+                                router.push('/login-history')
                             }}
                             isLast
                         />

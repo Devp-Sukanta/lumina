@@ -662,8 +662,8 @@ export default function ProfileScreen() {
                         />
 
                         <SettingsRow
-                            title="Security & Biometrics"
-                            subtitle="2FA, fingerprint, login history"
+                            title="App Security"
+                            subtitle="change your password, login history"
                             icon="shield-lock-outline"
                             colors={colors}
                             onPress={() =>

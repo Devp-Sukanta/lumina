@@ -2,6 +2,7 @@
 import { fonts, getColors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import {
   Pressable,
   ScrollView,
@@ -192,7 +193,7 @@ export default function HomeScreen() {
         {/* Recent activity */}
         <View style={styles.rowBetween}>
           <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <Pressable style={styles.rowCenter}>
+          <Pressable style={styles.rowCenter} onPress={()=>router.push("/activity")}>
             <Text style={styles.viewAllText}>View All</Text>
             <Feather name="chevron-right" size={14} color={colors.link} />
           </Pressable>

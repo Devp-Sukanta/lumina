@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 const SCREEN_WIDTH = width;
@@ -243,270 +244,273 @@ export default function AnalyticsScreen() {
       style={[styles.container, { backgroundColor: colors.background }]}
       showsVerticalScrollIndicator={false}
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.textPrimary, fontFamily: 'System' }]}>
-          Financial Analytics
-        </Text>
-        <Text style={[styles.subtitle, { color: colors.textSecondary, fontFamily: 'System' }]}>
-          Sep 1 - Sep 30
-        </Text>
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* Header */}
 
-      {/* Main Stats */}
-      <View style={styles.statsContainer}>
-        <StatCard
-          colors={colors}
-          label="Total Expense"
-          value={financialData.totalExpense}
-          change={financialData.percentageChange}
-        />
-      </View>
+        <View style={styles.header}>
+          <Text style={[styles.title, { color: colors.textPrimary, fontFamily: 'System' }]}>
+            Financial Analytics
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary, fontFamily: 'System' }]}>
+            Sep 1 - Sep 30
+          </Text>
+        </View>
 
-      {/* Spending Trend - Transaction Based */}
-      <View
-        style={[
-          styles.section,
-          { backgroundColor: colors.card, borderColor: colors.cardBorder },
-        ]}
-      >
-        <View style={styles.chartHeader}>
-          <View>
+        {/* Main Stats */}
+        <View style={styles.statsContainer}>
+          <StatCard
+            colors={colors}
+            label="Total Expense"
+            value={financialData.totalExpense}
+            change={financialData.percentageChange}
+          />
+        </View>
+
+        {/* Spending Trend - Transaction Based */}
+        <View
+          style={[
+            styles.section,
+            { backgroundColor: colors.card, borderColor: colors.cardBorder },
+          ]}
+        >
+          <View style={styles.chartHeader}>
+            <View>
+              <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
+                Spending Trend
+              </Text>
+              <Text style={[styles.sectionSubtext, { color: colors.textSecondary, fontFamily: 'System' }]}>
+                Sep 1 - Sep 30
+              </Text>
+            </View>
+            <View style={styles.chartBadge}>
+              <Text style={[styles.chartBadgeValue, { color: colors.primary, fontFamily: 'System' }]}>
+                ₹{totalExpense.toLocaleString()}
+              </Text>
+              <Text style={[styles.chartBadgeLabel, { color: colors.textSecondary, fontFamily: 'System' }]}>
+                total spent
+              </Text>
+            </View>
+          </View>
+
+          {needsHorizontalScroll ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={true}
+              scrollEventThrottle={16}
+              style={styles.horizontalScrollChart}
+            >
+              <LineChart
+                areaChart
+                data={lineChartData}
+                height={220}
+                width={chartWidth}
+                showVerticalLines
+                verticalLinesColor={colors.divider}
+                xAxisColor={colors.divider}
+                yAxisColor={colors.divider}
+                color={colors.primary}
+                startFillColor={colors.primary}
+                endFillColor={colors.primary}
+                startOpacity={0.3}
+                endOpacity={0}
+                dataPointsColor={colors.primary}
+                textColor={colors.textSecondary}
+                xAxisLabelTextStyle={{
+                  color: colors.textSecondary,
+                  fontSize: 11,
+                }}
+                yAxisTextStyle={{ color: colors.textSecondary, fontSize: 10 }}
+                spacing={40}
+                yAxisAtTop={false}
+                hideDataPoints={false}
+                dataPointsRadius={5}
+                curved
+                animateOnDataChange
+                animationDuration={800}
+              />
+            </ScrollView>
+          ) : (
+            <View style={styles.chartContainer}>
+              <LineChart
+                areaChart
+                data={lineChartData}
+                height={220}
+                width={SCREEN_WIDTH - 64}
+                showVerticalLines
+                verticalLinesColor={colors.divider}
+                xAxisColor={colors.divider}
+                yAxisColor={colors.divider}
+                color={colors.primary}
+                startFillColor={colors.primary}
+                endFillColor={colors.primary}
+                startOpacity={0.3}
+                endOpacity={0}
+                dataPointsColor={colors.primary}
+                textColor={colors.textSecondary}
+                xAxisLabelTextStyle={{
+                  color: colors.textSecondary,
+                  fontSize: 11,
+                }}
+                yAxisTextStyle={{ color: colors.textSecondary, fontSize: 10 }}
+                spacing={40}
+                yAxisAtTop={false}
+                hideDataPoints={false}
+                dataPointsRadius={5}
+                curved
+                animateOnDataChange
+                animationDuration={800}
+              />
+            </View>
+          )}
+        </View>
+
+        {/* Cashflow Velocity - Last 3 Months (grouped In/Out bars) */}
+        <View
+          style={[
+            styles.section,
+            { backgroundColor: colors.card, borderColor: colors.cardBorder },
+          ]}
+        >
+          <View style={styles.chartHeader}>
             <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
-              Spending Trend
+              Cashflow Velocity (Last 3 Months)
             </Text>
-            <Text style={[styles.sectionSubtext, { color: colors.textSecondary, fontFamily: 'System' }]}>
-              Sep 1 - Sep 30
-            </Text>
+            <View style={styles.legendRow}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
+                <Text style={[styles.legendText, { color: colors.textSecondary, fontFamily: 'System' }]}>
+                  In
+                </Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: colors.error }]} />
+                <Text style={[styles.legendText, { color: colors.textSecondary, fontFamily: 'System' }]}>
+                  Out
+                </Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.chartBadge}>
-            <Text style={[styles.chartBadgeValue, { color: colors.primary, fontFamily: 'System' }]}>
-              ₹{totalExpense.toLocaleString()}
-            </Text>
-            <Text style={[styles.chartBadgeLabel, { color: colors.textSecondary, fontFamily: 'System' }]}>
-              total spent
-            </Text>
-          </View>
-        </View>
 
-        {needsHorizontalScroll ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            scrollEventThrottle={16}
-            style={styles.horizontalScrollChart}
-          >
-            <LineChart
-              areaChart
-              data={lineChartData}
-              height={220}
-              width={chartWidth}
-              showVerticalLines
-              verticalLinesColor={colors.divider}
-              xAxisColor={colors.divider}
-              yAxisColor={colors.divider}
-              color={colors.primary}
-              startFillColor={colors.primary}
-              endFillColor={colors.primary}
-              startOpacity={0.3}
-              endOpacity={0}
-              dataPointsColor={colors.primary}
-              textColor={colors.textSecondary}
-              xAxisLabelTextStyle={{
-                color: colors.textSecondary,
-                fontSize: 11,
-              }}
-              yAxisTextStyle={{ color: colors.textSecondary, fontSize: 10 }}
-              spacing={40}
-              yAxisAtTop={false}
-              hideDataPoints={false}
-              dataPointsRadius={5}
-              curved
-              animateOnDataChange
-              animationDuration={800}
-            />
-          </ScrollView>
-        ) : (
           <View style={styles.chartContainer}>
-            <LineChart
-              areaChart
-              data={lineChartData}
-              height={220}
+            <BarChart
+              data={cashflowBarData}
+              height={200}
               width={SCREEN_WIDTH - 64}
-              showVerticalLines
-              verticalLinesColor={colors.divider}
+              barWidth={22}
+              initialSpacing={16}
               xAxisColor={colors.divider}
               yAxisColor={colors.divider}
-              color={colors.primary}
-              startFillColor={colors.primary}
-              endFillColor={colors.primary}
-              startOpacity={0.3}
-              endOpacity={0}
-              dataPointsColor={colors.primary}
-              textColor={colors.textSecondary}
               xAxisLabelTextStyle={{
                 color: colors.textSecondary,
-                fontSize: 11,
+                fontSize: 12,
               }}
-              yAxisTextStyle={{ color: colors.textSecondary, fontSize: 10 }}
-              spacing={40}
-              yAxisAtTop={false}
-              hideDataPoints={false}
-              dataPointsRadius={5}
-              curved
-              animateOnDataChange
-              animationDuration={800}
+              yAxisTextStyle={{ color: colors.textSecondary, fontSize: 11 }}
+              hideRules={false}
+              rulesColor={colors.divider}
+              yAxisThickness={1}
+              xAxisThickness={1}
             />
           </View>
-        )}
-      </View>
+        </View>
 
-      {/* Cashflow Velocity - Last 3 Months (grouped In/Out bars) */}
-      <View
-        style={[
-          styles.section,
-          { backgroundColor: colors.card, borderColor: colors.cardBorder },
-        ]}
-      >
-        <View style={styles.chartHeader}>
+        {/* Efficiency & Run Rate */}
+        <View
+          style={[
+            styles.section,
+            { backgroundColor: colors.card, borderColor: colors.cardBorder },
+          ]}
+        >
           <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
-            Cashflow Velocity (Last 3 Months)
+            Efficiency & Run Rate
           </Text>
-          <View style={styles.legendRow}>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
-              <Text style={[styles.legendText, { color: colors.textSecondary, fontFamily: 'System' }]}>
-                In
-              </Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: colors.error }]} />
-              <Text style={[styles.legendText, { color: colors.textSecondary, fontFamily: 'System' }]}>
-                Out
-              </Text>
-            </View>
+          <View style={styles.statRowContainer}>
+            <StatRowItem
+              colors={colors}
+              label="Efficiency"
+              value={`${financialData.efficiency}%`}
+              subtext="Budget utilization"
+            />
+            <View
+              style={[styles.statRowDivider, { backgroundColor: colors.divider }]}
+            />
+            <StatRowItem
+              colors={colors}
+              label="Run Rate"
+              value={`₹${financialData.runRate.toLocaleString()}`}
+              subtext="Avg per transaction"
+            />
           </View>
         </View>
 
-        <View style={styles.chartContainer}>
-          <BarChart
-            data={cashflowBarData}
-            height={200}
-            width={SCREEN_WIDTH - 64}
-            barWidth={22}
-            initialSpacing={16}
-            xAxisColor={colors.divider}
-            yAxisColor={colors.divider}
-            xAxisLabelTextStyle={{
-              color: colors.textSecondary,
-              fontSize: 12,
-            }}
-            yAxisTextStyle={{ color: colors.textSecondary, fontSize: 11 }}
-            hideRules={false}
-            rulesColor={colors.divider}
-            yAxisThickness={1}
-            xAxisThickness={1}
-          />
-        </View>
-      </View>
+        {/* Category Breakdown */}
+        <View
+          style={[
+            styles.section,
+            { backgroundColor: colors.card, borderColor: colors.cardBorder },
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
+              Category Breakdown
+            </Text>
+            <Text style={[styles.sectionSubtitle, { color: colors.textSecondary, fontFamily: 'System' }]}>
+              {financialData.categories.length} Categories
+            </Text>
+          </View>
 
-      {/* Efficiency & Run Rate */}
-      <View
-        style={[
-          styles.section,
-          { backgroundColor: colors.card, borderColor: colors.cardBorder },
-        ]}
-      >
-        <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
-          Efficiency & Run Rate
-        </Text>
-        <View style={styles.statRowContainer}>
-          <StatRowItem
-            colors={colors}
-            label="Efficiency"
-            value={`${financialData.efficiency}%`}
-            subtext="Budget utilization"
-          />
-          <View
-            style={[styles.statRowDivider, { backgroundColor: colors.divider }]}
-          />
-          <StatRowItem
-            colors={colors}
-            label="Run Rate"
-            value={`₹${financialData.runRate.toLocaleString()}`}
-            subtext="Avg per transaction"
-          />
-        </View>
-      </View>
+          {/* Pie Chart */}
+          <View style={styles.pieContainer}>
+            <PieChart
+              data={pieData}
+              donut
+              radius={80}
+              innerRadius={60}
+              textColor={colors.textPrimary}
+              textSize={10}
+            />
+          </View>
 
-      {/* Category Breakdown */}
-      <View
-        style={[
-          styles.section,
-          { backgroundColor: colors.card, borderColor: colors.cardBorder },
-        ]}
-      >
-        <View style={styles.sectionHeader}>
+          {/* Category List */}
+          <View style={{ marginTop: 20 }}>
+            {financialData.categories.map((category, index) => (
+              <CategoryCard key={index} colors={colors} category={category} />
+            ))}
+          </View>
+        </View>
+
+        {/* This Month's Summary */}
+        <View
+          style={[
+            styles.section,
+            { backgroundColor: colors.card, borderColor: colors.cardBorder },
+          ]}
+        >
           <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
-            Category Breakdown
+            This Month's Summary
           </Text>
-          <Text style={[styles.sectionSubtitle, { color: colors.textSecondary, fontFamily: 'System' }]}>
-            {financialData.categories.length} Categories
-          </Text>
+          <View style={{ marginTop: 12 }}>
+            <InfoRow
+              colors={colors}
+              label="Total Transactions"
+              value={`${transactionData.length} transactions`}
+            />
+            <InfoRow
+              colors={colors}
+              label="Average per Transaction"
+              value={`₹${avgTransaction.toLocaleString()}`}
+            />
+            <InfoRow
+              colors={colors}
+              label="Budget Left"
+              value="₹1,185"
+              valueColor={colors.success}
+            />
+          </View>
         </View>
 
-        {/* Pie Chart */}
-        <View style={styles.pieContainer}>
-          <PieChart
-            data={pieData}
-            donut
-            radius={80}
-            innerRadius={60}
-            textColor={colors.textPrimary}
-            textSize={10}
-          />
-        </View>
-
-        {/* Category List */}
-        <View style={{ marginTop: 20 }}>
-          {financialData.categories.map((category, index) => (
-            <CategoryCard key={index} colors={colors} category={category} />
-          ))}
-        </View>
-      </View>
-
-      {/* This Month's Summary */}
-      <View
-        style={[
-          styles.section,
-          { backgroundColor: colors.card, borderColor: colors.cardBorder },
-        ]}
-      >
-        <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontFamily: 'System' }]}>
-          This Month's Summary
-        </Text>
-        <View style={{ marginTop: 12 }}>
-          <InfoRow
-            colors={colors}
-            label="Total Transactions"
-            value={`${transactionData.length} transactions`}
-          />
-          <InfoRow
-            colors={colors}
-            label="Average per Transaction"
-            value={`₹${avgTransaction.toLocaleString()}`}
-          />
-          <InfoRow
-            colors={colors}
-            label="Budget Left"
-            value="₹1,185"
-            valueColor={colors.success}
-          />
-        </View>
-      </View>
-
-      {/* Bottom Spacing */}
-      <View style={{ height: 40 }} />
+        {/* Bottom Spacing */}
+        <View style={{ height: 100 }} />
+      </SafeAreaView>
     </ScrollView>
   );
 }
